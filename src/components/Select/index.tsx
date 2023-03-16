@@ -1,5 +1,5 @@
-import chevron from '@/assets/icons/chevron-bottom.svg'
 import { ComponentProps } from 'react'
+import { VisuallyHidden } from '../VisuallyHidden'
 import {
   Filter,
   FilterLabel,
@@ -10,20 +10,35 @@ import {
 
 type SelectProps = ComponentProps<typeof FilterInput> & {
   label: string
+  hideLabel?: boolean
   name: string
   options: {
     value: string | number
     label: string
   }[]
+  className?: string
 }
 
-export function Select({ label, name, options }: SelectProps) {
+export function Select({
+  label,
+  name,
+  options,
+  onChange,
+  hideLabel = false,
+  className = '',
+}: SelectProps) {
   return (
-    <Filter>
-      <FilterLabel htmlFor={name}>{label}</FilterLabel>
+    <Filter className={className}>
+      {hideLabel ? (
+        <VisuallyHidden>
+          <FilterLabel htmlFor={name}>{label}</FilterLabel>
+        </VisuallyHidden>
+      ) : (
+        <FilterLabel htmlFor={name}>{label}</FilterLabel>
+      )}
       <FilterWrapper>
-        <FilterInput name={name} id={name}>
-          <FilterInputOption value="" disabled selected>
+        <FilterInput name={name} id={name} onChange={onChange}>
+          <FilterInputOption value="" disabled>
             Selecione
           </FilterInputOption>
           {options.map((option) => {
@@ -34,7 +49,6 @@ export function Select({ label, name, options }: SelectProps) {
             )
           })}
         </FilterInput>
-        <img src={chevron} alt="" />
       </FilterWrapper>
     </Filter>
   )

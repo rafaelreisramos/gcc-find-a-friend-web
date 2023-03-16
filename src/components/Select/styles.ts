@@ -1,3 +1,4 @@
+import chevron from '@/assets/icons/chevron-bottom.svg'
 import styled from 'styled-components'
 
 export const Filter = styled.div`
@@ -13,13 +14,20 @@ export const FilterLabel = styled.label`
 `
 
 export const FilterWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
   position: relative;
 
-  & > img {
+  &::after {
+    content: '';
+    height: 14px;
+    width: 14px;
     position: absolute;
-    right: 18px;
-    top: 50%;
-    transform: translateY(-50%);
+    right: 20px;
+    background: url('${chevron}') no-repeat right center;
+    pointer-events: none;
+    color: #ffffff;
   }
 `
 
@@ -34,17 +42,9 @@ export const FilterInput = styled.select`
   border-radius: 15px;
   border: none;
   outline: none;
-  padding: 20px;
+  // 20px from padding + 14px width + 16px margin
+  padding: 20px 50px 20px 20px;
   appearance: none;
-  position: relative;
-
-  &::before {
-    content: '⌄';
-    width: 12px;
-    height: 6px;
-    display: absolute;
-    color: #ffffff;
-  }
 `
 
 export const FilterInputOption = styled.option`
@@ -53,5 +53,4 @@ export const FilterInputOption = styled.option`
   line-height: 16px;
   font-weight: 500;
   color: #ffffff;
-  padding: 5px 7px;
 `
