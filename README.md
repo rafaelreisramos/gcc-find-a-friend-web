@@ -43,7 +43,7 @@ Para rodar o projeto você irá precisar da api da equipe de backend.
 Clone o repositório
 
 ```bash
-git clone github.com/rocketseat-education/gcc-find-a-friend-api
+git clone git@github.com/rocketseat-education/gcc-find-a-friend-api
 ```
 
 Entre no diretório do projeto
@@ -75,7 +75,7 @@ npm run dev
 Clone o repositório
 
 ```bash
-git clone github.com/rafaelreisramos/gcc-find-a-friend-web
+git clone git@github.com/rafaelreisramos/gcc-find-a-friend-web
 ```
 
 Entre no diretório do projeto
