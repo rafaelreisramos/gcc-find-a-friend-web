@@ -38,9 +38,7 @@ export function Select({
       )}
       <FilterWrapper>
         <FilterInput name={name} id={name} onChange={onChange}>
-          <FilterInputOption value="" disabled>
-            Selecione
-          </FilterInputOption>
+          <FilterInputOption value="">Selecione</FilterInputOption>
           {options.map((option) => {
             return (
               <FilterInputOption key={option.value} value={option.value}>
