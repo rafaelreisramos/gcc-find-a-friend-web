@@ -1,3 +1,5 @@
+import { ChangeEvent, useState } from 'react'
+
 import { Select } from '@/components/Select'
 
 import logo from '@/assets/icons/logo.svg'
@@ -77,13 +79,38 @@ const independencyOptions = [
   },
 ]
 
-export function Aside() {
+type Props = {
+  city: string
+  fetchPets: (city: string, searchParams: string) => Promise<void>
+}
+
+export function Aside({ city, fetchPets }: Props) {
+  const [filter, setFilter] = useState({
+    age: '',
+    energy: 0,
+    size: '',
+    independency: '',
+  })
+
   function handleSearchPets() {
-    // TO DO
+    let searchParams = ''
+    for (const [key, value] of Object.entries(filter)) {
+      if (value) {
+        searchParams += `${key}=${value}&`
+      }
+    }
+
+    fetchPets(city, searchParams)
   }
 
-  function handleChangeSearchFilters() {
-    // TO DO
+  async function handleChangeSearchFilters(
+    // eslint-disable-next-line prettier/prettier
+    e: ChangeEvent<HTMLSelectElement | HTMLInputElement>
+  ) {
+    setFilter((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }))
   }
 
   return (
@@ -92,8 +119,13 @@ export function Aside() {
         <div>
           <img src={logo} alt="" />
           <HeaderInput>
-            <input type="text" placeholder="Insira uma cidade" />
-            <button>
+            <input
+              type="text"
+              placeholder="Insira uma cidade"
+              value={city}
+              readOnly
+            />
+            <button onClick={handleSearchPets}>
               <img src={search} alt="ícone de lupa" />
             </button>
           </HeaderInput>
@@ -102,20 +134,36 @@ export function Aside() {
       <AsideContent>
         <ContentHeader>Filtros</ContentHeader>
         <ContentFilters>
-          <Select name="age" label="Idade" options={ageOptions} />
+          <Select
+            name="age"
+            label="Idade"
+            options={ageOptions}
+            value={filter.age}
+            onChange={handleChangeSearchFilters}
+          />
 
           <Select
             name="energy"
             label="Nível de energia"
             options={energyOptions}
+            value={filter.energy}
+            onChange={handleChangeSearchFilters}
           />
 
-          <Select name="size" label="Porte do animal" options={sizeOptions} />
+          <Select
+            name="size"
+            label="Porte do animal"
+            options={sizeOptions}
+            value={filter.size}
+            onChange={handleChangeSearchFilters}
+          />
 
           <Select
             name="independency"
             label="Nível de independência"
             options={independencyOptions}
+            value={filter.independency}
+            onChange={handleChangeSearchFilters}
           />
         </ContentFilters>
       </AsideContent>

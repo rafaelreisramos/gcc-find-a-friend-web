@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const Container = styled.aside`
-  width: 392px;
+  min-width: 392px;
   height: 100vh;
   background-color: #f15156;
 `
@@ -27,7 +27,8 @@ export const HeaderInput = styled.div`
   gap: 12px;
 
   input {
-    width: 203px;
+    min-width: 203px;
+    flex: 1;
     height: 60px;
     font-size: 16px;
     font-weight: bold;
