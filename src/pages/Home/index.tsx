@@ -1,4 +1,5 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { http } from '@/api/http'
 
@@ -34,39 +35,55 @@ interface City {
   name: string
 }
 
-interface Selection {
-  state: string
-  city: string
-}
-
 export function Home() {
   const [states, setStates] = useState<State[]>([])
   const [cities, setCities] = useState<City[]>([])
-  const [selection, setSelection] = useState({} as Selection)
+  const [city, setCity] = useState('')
+  const [state, setState] = useState('')
 
-  async function handleSearchPets(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+  const navigate = useNavigate()
 
-    const response = await http.get(`/pets/${selection.city}`)
-    console.log(response.data)
+  async function fetchCities(state: string) {
+    const response = await http.get(`/location/citys/${state}`)
+    const cities = response.data.citys.map((city: City) => {
+      return {
+        value: city.name,
+        label: city.name,
+      }
+    })
+    setCities(cities)
   }
 
   async function handleChangeState(e: ChangeEvent<HTMLSelectElement>) {
-    const response = await http.get(`/location/citys/${e.target.value}`)
-    setCities(response.data.citys)
-    setSelection((prevState) => ({ ...prevState, state: e.target.value }))
+    const state = e.target.value
+    setState(state)
+    await fetchCities(state)
   }
 
   function handleChangeCity(e: ChangeEvent<HTMLSelectElement>) {
-    setSelection((prevState) => ({ ...prevState, city: e.target.value }))
+    setCity(e.target.value)
+  }
+
+  function handleSearchPets() {
+    navigate('/map', {
+      state: {
+        city,
+      },
+    })
+  }
+
+  async function fetchStates() {
+    const response = await http.get('/location/states')
+    const states = response.data.states.map((state: State) => {
+      return {
+        label: state.sigla,
+        value: state.sigla,
+      }
+    })
+    setStates(states)
   }
 
   useEffect(() => {
-    async function fetchStates() {
-      const response = await http.get('/location/states')
-      setStates(response.data.states)
-    }
-
     fetchStates()
   }, [])
 
@@ -91,10 +108,8 @@ export function Home() {
             label="Estado"
             hideLabel={true}
             name="state"
-            options={states.map((state) => ({
-              value: state.sigla,
-              label: state.sigla,
-            }))}
+            options={states}
+            value={state}
             onChange={handleChangeState}
           />
 
@@ -102,10 +117,8 @@ export function Home() {
             label="Cidade"
             hideLabel={true}
             name="city"
-            options={cities.map((city) => ({
-              value: city.name,
-              label: city.name,
-            }))}
+            options={cities}
+            value={city}
             onChange={handleChangeCity}
           />
         </FormFieldset>
