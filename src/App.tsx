@@ -1,13 +1,12 @@
-import { Router } from './routes'
-import { BrowserRouter } from 'react-router-dom'
+import { RouterProvider } from 'react-router-dom'
+
 import GlobalStyles from './styles/global'
+import { router } from './routes'
 
 function App() {
   return (
     <>
-      <BrowserRouter>
-        <Router />
-      </BrowserRouter>
+      <RouterProvider router={router} />
       <GlobalStyles />
     </>
   )
