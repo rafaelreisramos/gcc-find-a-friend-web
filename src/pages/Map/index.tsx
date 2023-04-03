@@ -1,10 +1,12 @@
-import { ChangeEvent, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { http } from '@/api/http'
+import { useLocalStorage } from '@/hooks/local-storage'
 
 import { Aside } from '~/Aside'
 import { Card } from '~/Card'
+import { Pet } from '../Pet'
 
 import chevron from '@/assets/icons/chevron-bottom-blue.svg'
 
@@ -17,63 +19,43 @@ import {
   Display,
 } from './styles'
 
-type PetType = 'dog' | 'cat'
-
-export interface Pet {
-  id: string
-  age: string
-  energy: number
-  independence: string
-  name: string
-  photo_url: string
-  size: string
-  type: PetType
-}
+export type PetType = 'dog' | 'cat'
 
 export function Map() {
   const [pets, setPets] = useState<Pet[]>([])
-  const [petType, setPetType] = useState<PetType | 'all'>('all')
   const [petsFiltered, setPetsFiltered] = useState<Pet[]>([])
+  const [type, setType] = useState('all')
 
-  const {
-    state: { city },
-  } = useLocation()
-
-  function handleFilterByPetType(e: ChangeEvent<HTMLSelectElement>) {
-    setPetType(e.target.value as PetType | 'all')
-  }
-
-  async function fetchPets(city: string, searchParams = '') {
-    const response = await http.get(`/pets/${city}?${searchParams}`)
-    const pets = response.data.pets.map((pet: Pet) => {
-      return {
-        id: pet.id,
-        age: pet.age,
-        energy: pet.energy,
-        independence: pet.independence,
-        name: pet.name,
-        photo_url: pet.photo_url,
-        size: pet.size,
-        type: pet.type,
-      }
-    })
-    setPets(pets)
-    setPetsFiltered(pets)
-  }
+  const [city] = useLocalStorage('city', '')
+  const navigate = useNavigate()
 
   useEffect(() => {
-    fetchPets(city)
+    if (!city) return
+    async function fetchPets() {
+      try {
+        const response = await http.get(`pets/${city}`)
+        setPets(response.data.pets)
+        setPetsFiltered(response.data.pets)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    fetchPets()
   }, [city])
 
-  useEffect(() => {
-    const filtered =
-      petType === 'all' ? pets : pets.filter((pet) => pet.type === petType)
-    setPetsFiltered(filtered)
-  }, [petType, pets])
+  function handlePetDetails(id: string) {
+    navigate(`/pet/show/${id}`)
+  }
 
   return (
     <Container>
-      <Aside city={city} fetchPets={fetchPets} />
+      <Aside
+        pets={pets}
+        updatePets={setPets}
+        filterPets={setPetsFiltered}
+        type={type}
+      />
 
       <Content>
         <Header>
@@ -84,7 +66,7 @@ export function Map() {
             <HeaderSelect
               name="size"
               id="size"
-              onChange={handleFilterByPetType}
+              onChange={(e) => setType(e.target.value)}
             >
               <option value="all">Gatos e Cachorros</option>
               <option value="cat">Gatos</option>
@@ -95,12 +77,13 @@ export function Map() {
         </Header>
         <Display>
           {petsFiltered.length > 0 &&
-            petsFiltered.map((pet: Pet) => (
+            petsFiltered.map((pet) => (
               <Card
                 key={pet.id}
                 path={pet.photo_url}
-                type={pet.type}
+                petType={pet.type}
                 name={pet.name}
+                onClick={() => handlePetDetails(pet.id)}
               />
             ))}
         </Display>

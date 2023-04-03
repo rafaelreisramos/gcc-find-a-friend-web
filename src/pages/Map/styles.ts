@@ -34,6 +34,7 @@ export const Header = styled.div`
     font-weight: 400;
     color: #0d3b66;
   }
+
   span {
     font-weight: 800;
   }
@@ -54,6 +55,7 @@ export const SelectWrapper = styled.div`
     right: 18px;
     top: 50%;
     transform: translateY(-50%);
+    pointer-events: none;
   }
 `
 
