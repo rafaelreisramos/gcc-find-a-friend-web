@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
-import { Select as SelectComponent } from '@/components/Select'
-import { ReactComponent as LogoSVG } from '@/assets/icons/logo-with-name.svg'
+import { SearchBar as SearchBarComponent } from '@/components/SearchBar'
 
 export const Container = styled.div`
   display: grid;
@@ -19,7 +18,8 @@ export const Container = styled.div`
     grid-template-rows: max-content 305px max-content;
   }
 `
-export const Logo = styled(LogoSVG)`
+
+export const LogoWrapper = styled.div`
   justify-self: center;
 
   @media (min-width: 1152px) {
@@ -81,76 +81,4 @@ export const SearchTitle = styled.p`
   }
 `
 
-export const FormButton = styled.button`
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  gap: 16px;
-  background: #f4d35e;
-  border-radius: 20px;
-
-  svg {
-    width: 24px;
-    height: 24px;
-  }
-`
-
-export const FormSelect = styled(SelectComponent)``
-
-// Use div because legend have some differences with position float Chrome/Safari
-export const FormLegend = styled.div`
-  font-weight: 400;
-  font-size: 16px;
-
-  @media (min-width: 1152px) {
-    flex-shrink: 0;
-    flex-basis: 136px;
-  }
-`
-export const FormFieldset = styled.fieldset`
-  width: 100%;
-  border: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-
-  @media (min-width: 1152px) {
-    gap: 8px;
-    flex-direction: row;
-  }
-`
-
-export const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-
-  ${FormSelect}, ${FormButton} {
-    width: 100%;
-  }
-
-  @media (min-width: 1152px) {
-    grid-column: 2/3;
-    grid-row: 3;
-
-    flex-direction: row;
-
-    ${FormSelect}:nth-of-type(2) {
-      flex-basis: 96px;
-    }
-
-    ${FormSelect}:nth-of-type(3) {
-      flex: 1;
-      flex-basis: 200px;
-    }
-
-    ${FormButton} {
-      width: auto;
-      height: 72px;
-    }
-  }
-`
+export const SearchBar = styled(SearchBarComponent)``

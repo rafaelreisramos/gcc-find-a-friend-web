@@ -1,13 +1,14 @@
 import styled from 'styled-components'
 
-export const Container = styled.div`
+export const Container = styled.button`
+  border: none;
   max-width: 280px;
   width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
 
-  padding: 3px;
+  /* padding: 3px; */
   border-radius: 20px;
   background-color: #ffffff;
   overflow: hidden;
@@ -56,6 +57,7 @@ export const PetImage = styled.div`
   object-fit: cover;
 
   img {
+    display: block;
     height: 200px;
   }
 `

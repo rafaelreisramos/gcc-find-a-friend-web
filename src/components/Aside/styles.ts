@@ -1,24 +1,58 @@
 import styled from 'styled-components'
 
+import * as SearchBarStyles from '@/components/SearchBar/styles'
+import VisuallyHidden from '@/styles/visuallyHidden'
+
 export const Container = styled.aside`
-  min-width: 392px;
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
   background-color: #f15156;
+
+  @media (min-width: 768px) {
+    width: 392px;
+    height: 100vh;
+  }
 `
 
 export const AsideHeader = styled.div`
-  height: 241px;
+  display: flex;
+  flex-direction: column;
   background-color: #e44449;
-
-  img {
-    width: 45px;
-  }
 
   & > div {
     padding: 81px 56px 26px;
     display: flex;
     flex-direction: column;
     gap: 26px;
+  }
+
+  ${SearchBarStyles.Form} {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  ${SearchBarStyles.FormFieldset} {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  ${SearchBarStyles.FormLegend} {
+    font-size: 20px;
+    line-height: 34px;
+  }
+
+  ${SearchBarStyles.FormButton} {
+    width: 100%;
+  }
+
+  ${SearchBarStyles.FormFieldset} {
+    & > .first-select {
+      max-width: 100%;
+    }
+  }
+
+  ${SearchBarStyles.FormLegend} {
+    ${VisuallyHidden}
   }
 `
 
@@ -43,35 +77,13 @@ export const HeaderInput = styled.div`
       color: #f2f2f2;
     }
   }
-
-  button {
-    width: 60px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background-color: #f4d35e;
-    border: none;
-    border-radius: 20px;
-    transition: filter 0.2s;
-
-    img {
-      width: 22px;
-    }
-
-    :hover {
-      filter: brightness(0.9);
-    }
-  }
 `
 
 export const AsideContent = styled.div`
-  height: calc(100vh - 241px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  padding: 35px 56px;
+  padding: 32px 56px;
 `
 
 export const ContentHeader = styled.h1`

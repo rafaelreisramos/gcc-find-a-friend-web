@@ -1,5 +1,4 @@
 import { ComponentProps } from 'react'
-import { VisuallyHidden } from '../VisuallyHidden'
 import {
   Filter,
   FilterLabel,
@@ -10,13 +9,13 @@ import {
 
 type SelectProps = ComponentProps<typeof FilterInput> & {
   label: string
-  hideLabel?: boolean
   name: string
   options: {
     value: string | number
     label: string
   }[]
   className?: string
+  value: string | number
 }
 
 export function Select({
@@ -24,20 +23,14 @@ export function Select({
   name,
   options,
   onChange,
-  hideLabel = false,
   className = '',
+  value,
 }: SelectProps) {
   return (
     <Filter className={className}>
-      {hideLabel ? (
-        <VisuallyHidden>
-          <FilterLabel htmlFor={name}>{label}</FilterLabel>
-        </VisuallyHidden>
-      ) : (
-        <FilterLabel htmlFor={name}>{label}</FilterLabel>
-      )}
+      <FilterLabel htmlFor={name}>{label}</FilterLabel>
       <FilterWrapper>
-        <FilterInput name={name} id={name} onChange={onChange}>
+        <FilterInput name={name} id={name} onChange={onChange} value={value}>
           <FilterInputOption value="">Selecione</FilterInputOption>
           {options.map((option) => {
             return (

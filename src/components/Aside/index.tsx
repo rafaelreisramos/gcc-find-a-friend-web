@@ -1,9 +1,14 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 
-import { Select } from '@/components/Select'
+import { http } from '@/api/http'
+import { useLocalStorage } from '@/hooks/local-storage'
+import { getLocalStorage } from '@/utils/localStorage'
 
-import logo from '@/assets/icons/logo.svg'
-import search from '@/assets/icons/search.svg'
+import { Pet } from '@/pages/Pet'
+
+import { Select } from '../Select'
+import { SearchBar } from '../SearchBar'
+import { Logo } from '../Logo'
 
 import {
   Container,
@@ -79,18 +84,32 @@ const independencyOptions = [
   },
 ]
 
-type Props = {
-  city: string
-  fetchPets: (city: string, searchParams: string) => Promise<void>
+interface Filter {
+  age: string
+  energy: number
+  size: string
+  independence: string
+  type: string
 }
 
-export function Aside({ city, fetchPets }: Props) {
-  const [filter, setFilter] = useState({
+interface Props {
+  pets: Pet[]
+  updatePets: (pets: Pet[]) => void
+  filterPets: (pets: Pet[]) => void
+  type: string
+}
+
+export function Aside({ pets, type, filterPets, updatePets }: Props) {
+  const [filter, setFilter] = useState<Filter>({
     age: '',
     energy: 0,
     size: '',
-    independency: '',
+    independence: '',
+    type: 'all',
   })
+
+  const [url, setUrl] = useState('')
+  let [city] = useLocalStorage('city', '')
 
   function handleSearchPets() {
     let searchParams = ''
@@ -99,12 +118,11 @@ export function Aside({ city, fetchPets }: Props) {
         searchParams += `${key}=${value}&`
       }
     }
-
-    fetchPets(city, searchParams)
+    city = getLocalStorage('city')
+    setUrl(`/pets/${city}?${searchParams}`)
   }
 
   async function handleChangeSearchFilters(
-    // eslint-disable-next-line prettier/prettier
     e: ChangeEvent<HTMLSelectElement | HTMLInputElement>
   ) {
     setFilter((prevState) => ({
@@ -113,21 +131,55 @@ export function Aside({ city, fetchPets }: Props) {
     }))
   }
 
+  useEffect(() => {
+    setFilter((prevState) => ({
+      ...prevState,
+      type,
+    }))
+  }, [type])
+
+  useEffect(() => {
+    let filteredPets = pets.filter((pet) => {
+      if (filter.age !== '' && pet.age !== filter.age) return false
+      if (Number(filter.energy) !== 0 && pet.energy !== Number(filter.energy))
+        return false
+      if (filter.size !== '' && pet.size !== filter.size) return false
+      if (
+        filter.independence !== '' &&
+        pet.independence !== filter.independence
+      )
+        return false
+      return true
+    })
+    if (filter.type !== 'all') {
+      filteredPets = filteredPets.filter((pet) => pet.type === filter.type)
+    }
+
+    filterPets(filteredPets)
+  }, [filter, filterPets, pets])
+
+  useEffect(() => {
+    if (!url) return
+    async function fetchPets() {
+      try {
+        const response = await http.get(url)
+        updatePets(response.data.pets)
+        filterPets(response.data.pets)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    fetchPets()
+  }, [filterPets, updatePets, url])
+
   return (
     <Container>
       <AsideHeader>
         <div>
-          <img src={logo} alt="" />
+          <Logo size="small" hideText={true} />
           <HeaderInput>
-            <input
-              type="text"
-              placeholder="Insira uma cidade"
-              value={city}
-              readOnly
-            />
-            <button onClick={handleSearchPets}>
-              <img src={search} alt="ícone de lupa" />
-            </button>
+            <SearchBar onSearch={handleSearchPets} />
           </HeaderInput>
         </div>
       </AsideHeader>
@@ -159,10 +211,10 @@ export function Aside({ city, fetchPets }: Props) {
           />
 
           <Select
-            name="independency"
+            name="independence"
             label="Nível de independência"
             options={independencyOptions}
-            value={filter.independency}
+            value={filter.independence}
             onChange={handleChangeSearchFilters}
           />
         </ContentFilters>
